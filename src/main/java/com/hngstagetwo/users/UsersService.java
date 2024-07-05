@@ -5,12 +5,16 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UsersService {
     Optional<User> findByEmail(String email);
-    User save(RegisterDto registerDto);
+    User create(RegisterDto registerDto);
+    Optional<User> findById(UUID id);
 
     ResponseEntity<List<User>> findAll();
 
-    ResponseEntity<Object> getUser(Long id);
+    ResponseEntity<Object> getUser(UUID id, String username);
+
+    void save(User user);
 }

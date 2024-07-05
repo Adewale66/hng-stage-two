@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("users")
+@RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UsersController {
 
@@ -20,7 +22,7 @@ public class UsersController {
     }
 
     @GetMapping("users/{id}")
-    public ResponseEntity<Object> getUser(@PathVariable("id") String id) {
-        return  usersService.getUser(Long.valueOf(id));
+    public ResponseEntity<Object> getUser(@PathVariable("id") UUID id, Principal principal) {
+        return  usersService.getUser(id, principal.getName());
     }
 }

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 @Entity()
 @Getter()
@@ -21,8 +22,8 @@ import java.util.Set;
 public class User implements UserDetails {
 
     @Id()
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private UUID userId;
 
     @Column(nullable = false)
     private String firstName;
@@ -39,7 +40,7 @@ public class User implements UserDetails {
     @Column()
     private String phone;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinTable (
             name = "user_organisations",
             joinColumns = @JoinColumn(name = "org_id"),

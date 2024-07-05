@@ -1,6 +1,7 @@
 package com.hngstagetwo.configuration;
 
 import com.hngstagetwo.errors.InvalidCredentialException;
+import com.hngstagetwo.errors.ResourceNotFound;
 import com.hngstagetwo.errors.ValidationError;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -61,6 +62,16 @@ public class GlobalErrorHandler {
             put("statusCode", 401);
         }};
         return  new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResourceNotFound.class)
+    public ResponseEntity<Object> resourceNotFound() {
+        return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> catchAll() {
+        return new ResponseEntity<>("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }

@@ -5,6 +5,8 @@ import com.hngstagetwo.dtos.RegisterDto;
 import com.hngstagetwo.dtos.UserResponseDto;
 import com.hngstagetwo.errors.InvalidCredentialException;
 import com.hngstagetwo.jwt.JwtService;
+import com.hngstagetwo.organisation.Organisation;
+import com.hngstagetwo.organisation.OrganisationService;
 import com.hngstagetwo.users.User;
 import com.hngstagetwo.users.UsersService;
 import lombok.RequiredArgsConstructor;
@@ -15,13 +17,16 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {
 
     private final UsersService usersService;
+    private final OrganisationService organisationService;
     private final ModelMapper modelMapper;
     private final JwtService jwtService;
     private final PasswordEncoder passwordEncoder;
@@ -40,7 +45,21 @@ public class AuthenticationService {
 
     }
     public ResponseEntity<Object> register(RegisterDto registerDto) {
-        var user = usersService.save(registerDto);
+        User user = usersService.create(registerDto);
+        Organisation organisation = organisationService.create(user.getFirstName());
+
+        Set<User> users = new HashSet<>(){{
+            add(user);
+        }};
+        Set<Organisation> organisations = new HashSet<>(){{
+            add(organisation);
+        }};
+        user.setOrganisations(organisations);
+        organisation.setMembers(users);
+
+        usersService.save(user);
+        organisationService.save(organisation);
+
         UserResponseDto userResponseDto = modelMapper.map(user, UserResponseDto.class);
         var jwt = jwtService.generateToken(user);
         var response = response("Registration", jwt, userResponseDto);
