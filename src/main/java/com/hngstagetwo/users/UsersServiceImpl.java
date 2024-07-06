@@ -12,13 +12,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class UsersServiceImpl implements UsersService{
+public class UsersServiceImpl implements UsersService {
 
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
@@ -47,11 +46,6 @@ public class UsersServiceImpl implements UsersService{
     }
 
     @Override
-    public ResponseEntity<List<User>> findAll() {
-        return new ResponseEntity<>(usersRepository.findAll(), HttpStatus.OK);
-    }
-
-    @Override
     public ResponseEntity<Object> getUser(UUID id, String username) {
         var user = usersRepository.findByEmail(username).orElseThrow(ResourceNotFound::new);
         var returnUser = usersRepository.findById(id).orElseThrow(ResourceNotFound::new);
@@ -66,7 +60,7 @@ public class UsersServiceImpl implements UsersService{
             throw new ResourceNotFound();
         }
         UserResponseDto userResponseDto = modelMapper.map(returnUser, UserResponseDto.class);
-        var response = new HashMap<>(){{
+        var response = new HashMap<>() {{
             put("status", "success");
             put("message", "Retrieval successful");
             put("data", userResponseDto);

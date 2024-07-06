@@ -1,6 +1,7 @@
 package com.hngstagetwo.organisation;
 
 import com.hngstagetwo.dtos.CreateOrg;
+import com.hngstagetwo.dtos.IdDto;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class OrganisationController {
 
     private final OrganisationService organisationService;
 
-    @GetMapping()
+    @GetMapping
     public ResponseEntity<Object> getAll(Principal principal) {
         return organisationService.getAll(principal.getName());
     }
@@ -32,7 +33,7 @@ public class OrganisationController {
     }
 
     @PostMapping("{orgId}/users")
-    public ResponseEntity<Object> addUser(@PathVariable("orgId") UUID id, @RequestBody UUID userId,  Principal principal) {
-        return organisationService.addUser(id, principal.getName(), userId);
+    public ResponseEntity<Object> addUser(@PathVariable("orgId") UUID orgId, @RequestBody @Valid IdDto userId) {
+        return organisationService.addUser(orgId, UUID.fromString(userId.userId()));
     }
 }

@@ -27,7 +27,7 @@ public class JwtService {
         return extractClaim(token, Claims::getSubject);
     }
 
-    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver){
+    public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAll(token);
         return claimsResolver.apply(claims);
     }
@@ -35,6 +35,7 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         return generateToken(new HashMap<>(), userDetails);
     }
+
     public String generateToken(Map<String, Object> claims, UserDetails userDetails) {
         return buildToken(claims, userDetails, JWT_TTL);
     }

@@ -21,32 +21,26 @@ import java.util.UUID;
 @AllArgsConstructor
 public class User implements UserDetails {
 
+    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "user_organisations",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "org_id")
+    )
+    Set<Organisation> organisations;
     @Id()
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID userId;
-
     @Column(nullable = false)
     private String firstName;
-
     @Column(nullable = false)
     private String lastName;
-
     @Column(nullable = false, unique = true)
     private String email;
-
     @Column(nullable = false)
     private String password;
-
     @Column()
     private String phone;
-
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinTable (
-            name = "user_organisations",
-            joinColumns = @JoinColumn(name = "org_id"),
-            inverseJoinColumns = @JoinColumn(name = "user_id")
-    )
-    Set<Organisation> organisations;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

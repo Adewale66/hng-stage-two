@@ -44,18 +44,19 @@ public class AuthenticationService {
         return new ResponseEntity<>(response, HttpStatus.OK);
 
     }
+
     public ResponseEntity<Object> register(RegisterDto registerDto) {
         User user = usersService.create(registerDto);
         Organisation organisation = organisationService.create(user.getFirstName());
 
-        Set<User> users = new HashSet<>(){{
+        Set<User> members = new HashSet<>() {{
             add(user);
         }};
-        Set<Organisation> organisations = new HashSet<>(){{
+        Set<Organisation> organisations = new HashSet<>() {{
             add(organisation);
         }};
         user.setOrganisations(organisations);
-        organisation.setMembers(users);
+        organisation.setMembers(members);
 
         usersService.save(user);
         organisationService.save(organisation);
@@ -68,12 +69,12 @@ public class AuthenticationService {
 
     private Map<String, Object> response(String type, String accessToken, UserResponseDto userResponseDto) {
         var message = String.format("%s successful", type);
-        Map<String, Object> data = new HashMap<>(){{
+        Map<String, Object> data = new HashMap<>() {{
             put("accessToken", accessToken);
             put("user", userResponseDto);
         }};
 
-        return new HashMap<>(){{
+        return new HashMap<>() {{
             put("status", "success");
             put("message", message);
             put("data", data);

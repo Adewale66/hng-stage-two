@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 
 @RestControllerAdvice
 public class GlobalErrorHandler {
-    
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
-    public ResponseEntity<Object>handleNotValidError(MethodArgumentNotValidException exception) {
+    public ResponseEntity<Object> handleNotValidError(MethodArgumentNotValidException exception) {
 
 
         List<ObjectError> allErrors = exception.getBindingResult().getAllErrors();
@@ -31,12 +31,11 @@ public class GlobalErrorHandler {
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher;
 
-        for( ObjectError error : allErrors )
-        {
+        for (ObjectError error : allErrors) {
             matcher = pattern.matcher(Arrays.toString(error.getArguments()));
-            if(matcher.find()) {
+            if (matcher.find()) {
                 validationErrors.add(
-                        new ValidationError(matcher.group(1), error.getDefaultMessage() )
+                        new ValidationError(matcher.group(1), error.getDefaultMessage())
                 );
             }
         }
@@ -49,7 +48,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> dataIntegrityException() {
-        Map<String, Object> response = new HashMap<>(){{
+        Map<String, Object> response = new HashMap<>() {{
             put("status", "Bad request");
             put("message", "Registration unsuccessful");
             put("statusCode", 400);
@@ -60,7 +59,7 @@ public class GlobalErrorHandler {
     @ExceptionHandler(InvalidCredentialException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> invalidCredentials() {
-        Map<String, Object> response = new HashMap<>(){{
+        Map<String, Object> response = new HashMap<>() {{
             put("status", "Bad request");
             put("message", "Authentication failed");
             put("statusCode", 401);
@@ -71,7 +70,9 @@ public class GlobalErrorHandler {
     @ExceptionHandler(ResourceNotFound.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> resourceNotFound() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new HashMap<>() {{
+            put("message", "Resource not found");
+        }});
     }
 
     @ExceptionHandler(Exception.class)

@@ -17,18 +17,15 @@ import java.util.UUID;
 @Table(name = "organisations")
 public class Organisation {
 
+    @ManyToMany(mappedBy = "organisations")
+    Set<User> members;
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID orgId;
-
     @Column(nullable = false)
     private String name;
-
     @Column
     private String description;
-
-    @ManyToMany(mappedBy = "organisations")
-    Set<User> members;
 
     @Override
     public boolean equals(Object o) {

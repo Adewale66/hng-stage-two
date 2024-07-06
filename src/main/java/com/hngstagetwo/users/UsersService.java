@@ -9,10 +9,10 @@ import java.util.UUID;
 
 public interface UsersService {
     Optional<User> findByEmail(String email);
-    User create(RegisterDto registerDto);
-    Optional<User> findById(UUID id);
 
-    ResponseEntity<List<User>> findAll();
+    User create(RegisterDto registerDto);
+
+    Optional<User> findById(UUID id);
 
     ResponseEntity<Object> getUser(UUID id, String username);
 

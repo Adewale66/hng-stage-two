@@ -1,7 +1,6 @@
 package com.hngstagetwo.jwt;
 
 import com.hngstagetwo.users.UsersRepository;
-import com.hngstagetwo.users.UsersService;
 import jakarta.annotation.Nonnull;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,8 +27,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
 
     @Override
-    protected void doFilterInternal(@Nonnull  HttpServletRequest request,
-                                    @Nonnull  HttpServletResponse response,
+    protected void doFilterInternal(@Nonnull HttpServletRequest request,
+                                    @Nonnull HttpServletResponse response,
                                     @Nonnull FilterChain filterChain)
             throws ServletException, IOException {
         String auth = request.getHeader("Authorization");
@@ -44,7 +43,11 @@ public class JwtFilter extends OncePerRequestFilter {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (username != null && authentication == null) {
-            UserDetails userDetails = usersRepository.findByEmail(username).orElseThrow();
+            UserDetails userDetails = usersRepository.findByEmail(username).orElse(null);
+            if (userDetails == null) {
+                filterChain.doFilter(request, response);
+                return;
+            }
 
             if (jwtService.isTokenValid(jwt, userDetails)) {
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
