@@ -8,17 +8,19 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-@ControllerAdvice
+@RestControllerAdvice
 public class GlobalErrorHandler {
     
     @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.UNPROCESSABLE_ENTITY)
     public ResponseEntity<Object>handleNotValidError(MethodArgumentNotValidException exception) {
 
 
@@ -41,37 +43,41 @@ public class GlobalErrorHandler {
 
         Map<String, List<ValidationError>> response = new HashMap<>();
         response.put("errors", validationErrors);
-        return  new ResponseEntity<>(response, HttpStatus.UNPROCESSABLE_ENTITY);
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY).body(response);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> dataIntegrityException() {
         Map<String, Object> response = new HashMap<>(){{
             put("status", "Bad request");
             put("message", "Registration unsuccessful");
             put("statusCode", 400);
         }};
-        return  new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(InvalidCredentialException.class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
     public ResponseEntity<Object> invalidCredentials() {
         Map<String, Object> response = new HashMap<>(){{
             put("status", "Bad request");
             put("message", "Authentication failed");
             put("statusCode", 401);
         }};
-        return  new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
     }
 
     @ExceptionHandler(ResourceNotFound.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public ResponseEntity<Object> resourceNotFound() {
-        return new ResponseEntity<>("Resource not found", HttpStatus.NOT_FOUND);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Resource not found");
     }
 
     @ExceptionHandler(Exception.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ResponseEntity<Object> catchAll() {
-        return new ResponseEntity<>("Server Error", HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error");
     }
 
 }
