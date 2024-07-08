@@ -74,11 +74,4 @@ public class GlobalErrorHandler {
             put("message", "Resource not found");
         }});
     }
-
-    @ExceptionHandler(Exception.class)
-    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ResponseEntity<Object> catchAll() {
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Server Error");
-    }
-
 }

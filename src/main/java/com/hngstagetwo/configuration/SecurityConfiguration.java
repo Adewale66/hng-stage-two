@@ -48,8 +48,12 @@ public class SecurityConfiguration {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.POST, "/auth/**").permitAll()
+                            .requestMatchers(HttpMethod.GET, "/api/users/*").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/api/organisations").authenticated()
+                            .requestMatchers(HttpMethod.GET, "/api/organisations/*").authenticated()
+                            .requestMatchers(HttpMethod.POST, "/api/organisations").authenticated()
                             .requestMatchers(HttpMethod.POST, "/api/organisations/*/users").permitAll()
-                            .anyRequest().authenticated();
+                            .anyRequest().permitAll();
                 })
                 .userDetailsService(userDetailsService())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
